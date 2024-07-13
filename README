@@ -4,7 +4,11 @@
 
 **Trading Strategy Simulator** is a Python-based desktop application that enables users to analyze stock market trends using various technical indicators. Leveraging historical stock data from Yahoo Finance, the application calculates and visualizes indicators such as Moving Averages, MACD, Bollinger Bands, Volume Trend, SuperTrend, and Pivot Points. With an intuitive Tkinter-based GUI, users can easily enter stock tickers, select date ranges, and generate insightful visualizations and buy/sell signals to support informed trading decisions. Ideal for both learning and developing trading strategies, this tool is essential for stock market enthusiasts and traders.
 
+<<<<<<< HEAD
 EXAMPLE OF ITC STOCK ANALYSIS:
+=======
+
+>>>>>>> 5c06675 (Images upload)
 
 ![CHEESE!](/Users/anshuljagtap/Documents/GitHub/Trading-Strategy-Simulator/Images/Entry field.png)
 
@@ -15,7 +19,10 @@ EXAMPLE OF ITC STOCK ANALYSIS:
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5c06675 (Images upload)
 ## Table of Contents
 
 - [Installation](#installation)

@@ -160,7 +160,7 @@ style.configure("TButton", font=("Arial", 12))
 main_frame = ttk.Frame(root, padding="10")
 main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
-ttk.Label(main_frame, text="Stock Ticker (e.g., RELIANCE.NS):").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+ttk.Label(main_frame, text="Stock(NIFTY FIFTY):").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 ticker_entry = ttk.Entry(main_frame, width=20)
 ticker_entry.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
 
