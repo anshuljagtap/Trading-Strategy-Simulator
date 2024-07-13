@@ -4,6 +4,17 @@
 
 **Trading Strategy Simulator** is a Python-based desktop application that enables users to analyze stock market trends using various technical indicators. Leveraging historical stock data from Yahoo Finance, the application calculates and visualizes indicators such as Moving Averages, MACD, Bollinger Bands, Volume Trend, SuperTrend, and Pivot Points. With an intuitive Tkinter-based GUI, users can easily enter stock tickers, select date ranges, and generate insightful visualizations and buy/sell signals to support informed trading decisions. Ideal for both learning and developing trading strategies, this tool is essential for stock market enthusiasts and traders.
 
+<img width="356" alt="Screenshot 2024-07-14 at 12 14 49 AM" src="https://github.com/user-attachments/assets/983c0b54-b117-4546-a0b5-bf6035bf49b9">
+<img width="1386" alt="Screenshot 2024-07-14 at 12 15 12 AM" src="https://github.com/user-attachments/assets/73e76b1e-5e28-43a1-85a5-573a08b05244">
+<img width="1393" alt="Screenshot 2024-07-14 at 12 15 25 AM" src="https://github.com/user-attachments/assets/1301cdbd-38c2-44f8-8224-7bfac409177b">
+<img width="1389" alt="Screenshot 2024-07-14 at 12 15 38 AM" src="https://github.com/user-attachments/assets/74b3f807-5cd8-4e45-b77f-94cd11248b80">
+<img width="1388" alt="Screenshot 2024-07-14 at 12 15 51 AM" src="https://github.com/user-attachments/assets/d192e6b4-3a63-4838-b804-9098bb767397">
+<img width="1388" alt="Screenshot 2024-07-14 at 12 16 06 AM" src="https://github.com/user-attachments/assets/17bb193c-2e4f-4e49-a35e-2b2da1ca5cbd">
+
+
+
+
+
 ## Table of Contents
 
 - [Installation](#installation)
