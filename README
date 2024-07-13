@@ -1,5 +1,101 @@
-IMPORT PACKAGES FOR THE SOFTWARE TO RUN 
-YAHOO 
-TKINTER 
-MATPLOTLIB
-TKCALENDER 
+# Trading Strategy Simulator
+
+## Project Description
+
+**Trading Strategy Simulator** is a Python-based desktop application that enables users to analyze stock market trends using various technical indicators. Leveraging historical stock data from Yahoo Finance, the application calculates and visualizes indicators such as Moving Averages, MACD, Bollinger Bands, Volume Trend, SuperTrend, and Pivot Points. With an intuitive Tkinter-based GUI, users can easily enter stock tickers, select date ranges, and generate insightful visualizations and buy/sell signals to support informed trading decisions. Ideal for both learning and developing trading strategies, this tool is essential for stock market enthusiasts and traders.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Dependencies](#dependencies)
+- [License](#license)
+- [Contact](#contact)
+
+## Installation
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/yourusername/Trading-Strategy-Simulator.git
+    cd Trading-Strategy-Simulator
+    ```
+
+2. **Create a virtual environment:**
+
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    ```
+
+3. **Install the dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+## Usage
+
+1. **Activate the virtual environment:**
+
+    ```bash
+    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    ```
+
+2. **Run the application:**
+
+    ```bash
+    python Trader.py
+    ```
+
+3. **Use the GUI to enter the stock ticker, start date, and end date, and click the "Analyze" button to perform the analysis.**
+
+## Features
+
+- Fetches historical stock data from Yahoo Finance.
+- Calculates various technical indicators including:
+  - Simple Moving Average (SMA)
+  - Exponential Moving Average (EMA)
+  - Moving Average Convergence Divergence (MACD)
+  - Bollinger Bands
+  - Volume Trend
+  - SuperTrend
+  - Pivot Points
+- Visualizes the data and indicators in separate plots.
+- User-friendly GUI for easy interaction.
+
+## Dependencies
+
+- `yfinance`: For fetching stock data from Yahoo Finance.
+- `pandas`: For data manipulation and analysis.
+- `numpy`: For numerical operations.
+- `matplotlib`: For plotting the data and indicators.
+- `tkinter`: For creating the GUI.
+- `tkcalendar`: For adding a calendar widget to the GUI.
+
+## License
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+## Contact
+
+If you have any questions or suggestions, please feel free to contact me through my website
