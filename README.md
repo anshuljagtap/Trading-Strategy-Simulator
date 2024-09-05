@@ -14,8 +14,8 @@ Automated the generation of buy and sell signals based on technical analysis, pr
 - EXAMPLE OF ITC STOCK ANALYSIS:
 =======
 
-<img width="1386" alt="MOVING AVG" src="https://github.com/user-attachments/assets/41cee3bc-ee43-4be6-b6e9-aecf14ca8347">
 <img width="356" alt="Entry field" src="https://github.com/user-attachments/assets/6649cf67-0990-4d2c-a24a-a1c61baa4a4d">
+<img width="1386" alt="MOVING AVG" src="https://github.com/user-attachments/assets/41cee3bc-ee43-4be6-b6e9-aecf14ca8347">
 <img width="1393" alt="Bollinger Bands" src="https://github.com/user-attachments/assets/ed2c7e6f-84e8-4b9d-9e96-f819b198b281">
 <img width="1389" alt="MACD and Signal Line" src="https://github.com/user-attachments/assets/2624ed2d-cfd8-401c-8ec3-41fdd9ddbe69">
 <img width="1388" alt="SuperTrend" src="https://github.com/user-attachments/assets/78c19822-ea8e-4828-acd3-04b10641c47f">
