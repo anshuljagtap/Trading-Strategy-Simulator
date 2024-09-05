@@ -35,37 +35,33 @@ Automated the generation of buy and sell signals based on technical analysis, pr
 
 1. Clone the repository:**
 
-    ```bash
     git clone https://github.com/yourusername/Trading-Strategy-Simulator.git
     cd Trading-Strategy-Simulator
-    ```
+
 
 2. **Create a virtual environment:**
 
-    ```bash
     python3 -m venv .venv
     source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-    ```
+
 
 3. **Install the dependencies:**
 
-    ```bash
+
     pip install -r requirements.txt
-    ```
+
 
 ## Usage
 
 1. **Activate the virtual environment:**
 
-    ```bash
     source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-    ```
+
 
 2. **Run the application:**
 
-    ```bash
     python Trader.py
-    ```
+
 
 3. **Use the GUI to enter the stock ticker, start date, and end date, and click the "Analyze" button to perform the analysis.**
 
