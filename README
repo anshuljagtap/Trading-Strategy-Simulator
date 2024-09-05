@@ -8,10 +8,10 @@ Designed and implemented a user-friendly graphical user interface (GUI) with Tki
 
 Automated the generation of buy and sell signals based on technical analysis, providing clear visual markers and summary reports that supported a 20% increase in data-driven trading decisions.
 
-**Trading Strategy Simulator** is a Python-based desktop application that enables users to analyze stock market trends using various technical indicators. Leveraging historical stock data from Yahoo Finance, the application calculates and visualizes indicators such as Moving Averages, MACD, Bollinger Bands, Volume Trend, SuperTrend, and Pivot Points. With an intuitive Tkinter-based GUI, users can easily enter stock tickers, select date ranges, and generate insightful visualizations and buy/sell signals to support informed trading decisions. Ideal for both learning and developing trading strategies, this tool is essential for stock market enthusiasts and traders.
+* Trading Strategy Simulator is a Python-based desktop application that enables users to analyze stock market trends using various technical indicators. Leveraging historical stock data from Yahoo Finance, the application calculates and visualizes indicators such as Moving Averages, MACD, Bollinger Bands, Volume Trend, SuperTrend, and Pivot Points. With an intuitive Tkinter-based GUI, users can easily enter stock tickers, select date ranges, and generate insightful visualizations and buy/sell signals to support informed trading decisions. Ideal for both learning and developing trading strategies, this tool is essential for stock market enthusiasts and traders.
 
 
-EXAMPLE OF ITC STOCK ANALYSIS:
+- EXAMPLE OF ITC STOCK ANALYSIS:
 =======
 
 <img width="1386" alt="MOVING AVG" src="https://github.com/user-attachments/assets/41cee3bc-ee43-4be6-b6e9-aecf14ca8347">
@@ -21,8 +21,6 @@ EXAMPLE OF ITC STOCK ANALYSIS:
 <img width="1388" alt="SuperTrend" src="https://github.com/user-attachments/assets/78c19822-ea8e-4828-acd3-04b10641c47f">
 <img width="1388" alt="Volume Trend" src="https://github.com/user-attachments/assets/456e2cd2-6187-4b03-bc90-8aaeb68ac578">
 
-
-=======
 
 ## Table of Contents
 
