@@ -92,17 +92,17 @@ def main():
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("Total Users", stats['total_users'])
+        st.metric("Total Users", stats['total_users'], help="All registered users since launch")
     with col2:
-        st.metric("Total Analyses", stats['total_analyses'])
+        st.metric("Total Analyses", stats['total_analyses'], help="Total stock analyses performed")
     with col3:
-        st.metric("Active Users (30 days)", stats['active_users'])
-    with col4:
         if stats['total_users'] > 0:
             avg_analyses = stats['total_analyses'] / stats['total_users']
-            st.metric("Avg Analyses per User", f"{avg_analyses:.1f}")
+            st.metric("Avg Analyses per User", f"{avg_analyses:.1f}", help="Average analyses per registered user")
         else:
             st.metric("Avg Analyses per User", "0")
+    with col4:
+        st.metric("Active Users (30 days)", stats['active_users'], help="Users who logged in within last 30 days")
     
     # Charts
     col1, col2 = st.columns(2)
@@ -191,6 +191,15 @@ def main():
     # Platform insights
     st.subheader("💡 Platform Insights")
     if stats['total_users'] > 0:
+        # Add a prominent total users display
+        st.markdown(f"""
+        <div style='background-color: #e8f4fd; padding: 20px; border-radius: 10px; border-left: 5px solid #1f77b4; margin-bottom: 20px;'>
+            <h3 style='margin: 0; color: #1f77b4;'>🎉 Total Users: {stats['total_users']}</h3>
+            <p style='margin: 5px 0; font-size: 16px;'>Your platform has <strong>{stats['total_users']}</strong> registered users!</p>
+            <p style='margin: 5px 0; font-size: 14px;'>Total analyses performed: <strong>{stats['total_analyses']}</strong></p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         col1, col2 = st.columns(2)
         
         with col1:
@@ -209,6 +218,8 @@ def main():
             - Platform usage: {stats['total_analyses'] / max(stats['total_users'], 1):.1f} analyses/user
             - Popular stock: {stats['popular_stocks'][0][0] if stats['popular_stocks'] else 'N/A'}
             """)
+    else:
+        st.info("No users registered yet. Start promoting your platform!")
 
 if __name__ == "__main__":
     main() 

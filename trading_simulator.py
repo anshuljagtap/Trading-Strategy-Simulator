@@ -1078,14 +1078,20 @@ def main():
         stats = get_user_stats()
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Total Users", stats['total_users'])
+            st.metric("Total Users", stats['total_users'], help="All registered users since launch")
         with col2:
-            st.metric("Total Analyses", stats['total_analyses'])
+            st.metric("Total Analyses", stats['total_analyses'], help="Total stock analyses performed")
         with col3:
-            st.metric("Active Users (30 days)", stats['active_users'])
+            if stats['total_users'] > 0:
+                avg_analyses = stats['total_analyses'] / stats['total_users']
+                st.metric("Avg Analyses per User", f"{avg_analyses:.1f}", help="Average analyses per registered user")
+            else:
+                st.metric("Avg Analyses per User", "0")
         with col4:
             if stats['popular_stocks']:
-                st.metric("Most Popular Stock", stats['popular_stocks'][0][0])
+                st.metric("Most Popular Stock", stats['popular_stocks'][0][0], help="Most frequently analyzed stock")
+            else:
+                st.metric("Most Popular Stock", "N/A")
         
         st.info("💡 Sign up to access the full trading analysis features and track your usage!")
         return
