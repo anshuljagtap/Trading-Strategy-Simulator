@@ -1,15 +1,18 @@
 # 📈 Trading Strategy Simulator
 
-A comprehensive stock market analysis tool built with Streamlit that provides technical analysis, trading signals, and weighted recommendations.
+A comprehensive stock market analysis tool built with Streamlit that provides technical analysis, trading signals, and weighted recommendations with user registration and analytics.
 
 ## ✨ Features
 
+- **🔐 User Registration**: Sign up and track your usage
 - **📊 Technical Indicators**: SMA, EMA, MACD, Bollinger Bands, SuperTrend, Volume Analysis
 - **🎯 Weighted Recommendations**: AI-powered buy/sell/hold signals with confidence levels
 - **⭐ Favorites Management**: Save and manage your favorite stocks
 - **📈 Interactive Charts**: Beautiful Plotly visualizations
 - **⚡ Quick Actions**: One-click analysis for popular stocks
 - **📱 Responsive Design**: Works on desktop and mobile
+- **📊 User Dashboard**: Track your analysis history and statistics
+- **👨‍💼 Admin Dashboard**: Monitor platform usage and user analytics
 
 ## 🚀 Quick Deploy (Recommended)
 
@@ -70,6 +73,33 @@ Others can access: `http://YOUR_IP:8501`
    http://localhost:8501
    ```
 
+## 🔐 User Registration System
+
+### Features
+- **Secure Registration**: Email-based signup with password hashing
+- **User Profiles**: Track individual user statistics and preferences
+- **Activity Logging**: Monitor user interactions and analyses
+- **Favorites Sync**: Personal favorite stocks saved per user
+- **Usage Analytics**: Track how many people use your platform
+
+### User Dashboard
+- **Personal Statistics**: View your analysis count and login history
+- **Recent Activity**: See your last 10 stock analyses
+- **Favorite Stocks**: Manage your personal stock watchlist
+- **Member Since**: Track how long you've been using the platform
+
+### Admin Dashboard
+Access admin analytics at: `http://localhost:8501/admin_dashboard.py`
+
+**Default Admin Password:** `admin123` (Change this in production!)
+
+**Admin Features:**
+- **User Analytics**: Total users, active users, growth trends
+- **Usage Statistics**: Total analyses, popular stocks, engagement metrics
+- **User Details**: Export user data, view individual user statistics
+- **Activity Monitoring**: Track recent platform activity
+- **Growth Insights**: User growth charts and platform metrics
+
 ## 📊 Technical Indicators
 
 ### Moving Averages
@@ -116,6 +146,7 @@ The app uses a **weighted scoring system** with 7 technical indicators:
 - **Remove Favorites**: Click "❌" to remove from favorites
 - **Auto-Add**: "⭐ Add to Favorites" button for current stock
 - **Clear All**: "🗑️ Clear All Favorites" to start fresh
+- **User Sync**: Favorites are saved per user account
 
 ## 🌐 Supported Stocks
 
@@ -135,14 +166,17 @@ The app supports stocks from major exchanges:
 - Modify `trading_simulator.py` to add new indicators
 - Update weights in `generate_recommendation()` function
 - Add new stocks to `popular_stocks` list
+- Change admin password in `admin_dashboard.py`
 
 ## 📱 Usage
 
-1. **Enter Stock Ticker**: Type a stock symbol (e.g., AAPL, MSFT)
-2. **Select Date Range**: Choose analysis period
-3. **View Analysis**: Explore charts and indicators
-4. **Check Recommendations**: See weighted buy/sell signals
-5. **Manage Favorites**: Save stocks for quick access
+1. **Sign Up/Login**: Create an account or login to track your usage
+2. **Enter Stock Ticker**: Type a stock symbol (e.g., AAPL, MSFT)
+3. **Select Date Range**: Choose analysis period
+4. **View Analysis**: Explore charts and indicators
+5. **Check Recommendations**: See weighted buy/sell signals
+6. **Manage Favorites**: Save stocks for quick access
+7. **View Dashboard**: Track your personal statistics
 
 ## 🚨 Important Notes
 
@@ -150,6 +184,8 @@ The app supports stocks from major exchanges:
 - **Rate Limits**: Respect API usage limits
 - **Educational Purpose**: Not financial advice
 - **Real-time Data**: Delayed by 15-20 minutes
+- **User Data**: Stored locally in `users.json` (consider database for production)
+- **Security**: Passwords are hashed, but consider additional security for production
 
 ## 🐛 Troubleshooting
 
@@ -157,6 +193,7 @@ The app supports stocks from major exchanges:
 1. **"No data found"**: Check ticker symbol spelling
 2. **Slow loading**: Reduce date range or check internet
 3. **Chart issues**: Refresh page or try different stock
+4. **Login issues**: Check email/password or create new account
 
 ### Performance Tips
 - Use shorter date ranges for faster loading
@@ -165,13 +202,16 @@ The app supports stocks from major exchanges:
 
 ## 📈 Future Enhancements
 
+- [ ] Database integration (PostgreSQL/MongoDB)
+- [ ] Email verification for registration
+- [ ] Password reset functionality
 - [ ] Real-time data feeds
 - [ ] Portfolio tracking
 - [ ] Backtesting capabilities
 - [ ] More technical indicators
 - [ ] Mobile app version
-- [ ] User authentication
 - [ ] Custom alerts
+- [ ] Social features (share analyses)
 
 ## 🤝 Contributing
 
@@ -190,6 +230,7 @@ This project is for educational purposes. Please do your own research before mak
 - **Issues**: Create a GitHub issue
 - **Questions**: Check the documentation
 - **Deployment**: See `DEPLOYMENT_GUIDE.md`
+- **Admin Access**: Use `admin_dashboard.py` with password `admin123`
 
 ---
 
