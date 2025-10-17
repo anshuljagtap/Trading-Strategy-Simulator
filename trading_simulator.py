@@ -580,16 +580,16 @@ def main():
         # Create columns for the popular stocks display
         cols = st.columns(5)
         
-        for i, stock in enumerate(popular_stocks[:10]):
+        for i, (ticker, count) in enumerate(popular_stocks[:10]):
             col_idx = i % 5
             with cols[col_idx]:
                 # Create a clickable button for each popular stock
                 if st.button(
-                    f"📈 {stock['ticker']}\n🔍 {stock['count']} searches", 
-                    key=f"popular_{stock['ticker']}",
-                    help=f"Last searched: {stock['last_searched'][:10] if stock['last_searched'] != 'N/A' else 'Never'}"
+                    f"📈 {ticker}\n🔍 {count} searches", 
+                    key=f"popular_{ticker}",
+                    help=f"Click to analyze {ticker}"
                 ):
-                    st.session_state.selected_ticker = stock['ticker']
+                    st.session_state.selected_ticker = ticker
                     st.rerun()
         
         # Show detailed table in an expander
@@ -597,16 +597,16 @@ def main():
             if popular_stocks:
                 # Create a DataFrame for better display
                 import pandas as pd
-                df = pd.DataFrame(popular_stocks)
-                df['Rank'] = range(1, len(df) + 1)
-                df = df[['Rank', 'ticker', 'count', 'last_searched']]
-                df.columns = ['Rank', 'Stock', 'Searches', 'Last Searched']
+                df_data = []
+                for i, (ticker, count) in enumerate(popular_stocks, 1):
+                    df_data.append({
+                        'Rank': i,
+                        'Stock': ticker,
+                        'Searches': count,
+                        'Last Searched': 'Recent'
+                    })
                 
-                # Format the last searched date
-                df['Last Searched'] = df['Last Searched'].apply(
-                    lambda x: x[:10] if x != 'N/A' else 'Never'
-                )
-                
+                df = pd.DataFrame(df_data)
                 st.dataframe(df, width='stretch', hide_index=True)
     else:
         st.info("No stock searches recorded yet. Start analyzing stocks to see popular trends!")
@@ -692,9 +692,9 @@ def main():
     popular_searches = auth_manager.get_popular_stocks(limit=5)
     
     if popular_searches:
-        for stock in popular_searches:
-            if st.sidebar.button(f"📈 {stock['ticker']} ({stock['count']})", key=f"sidebar_popular_{stock['ticker']}"):
-                st.session_state.selected_ticker = stock['ticker']
+        for ticker, count in popular_searches:
+            if st.sidebar.button(f"📈 {ticker} ({count})", key=f"sidebar_popular_{ticker}"):
+                st.session_state.selected_ticker = ticker
                 st.rerun()
     else:
         st.sidebar.info("No searches yet")
