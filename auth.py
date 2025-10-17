@@ -11,6 +11,7 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, Optional, Tuple, List
 import logging
+from email_service import get_email_service
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -92,12 +93,20 @@ class AuthManager:
             'last_login': None,
             'login_count': 0,
             'subscription_tier': 'free',
-            'analyses_count': 0
+            'analyses_count': 0,
+            'favorites': []
         }
         
         self.save_users(users)
+        
+        # Send welcome email
+        try:
+            self.send_welcome_email(username, email)
+        except Exception as e:
+            logger.warning(f"Failed to send welcome email to {username}: {e}")
+        
         logger.info(f"New user registered: {username}")
-        return True, "Registration successful!"
+        return True, "Registration successful! Check your email for a welcome message and login guide."
     
     def authenticate_user(self, username: str, password: str) -> Tuple[bool, str, Optional[Dict]]:
         """
@@ -217,6 +226,136 @@ class AuthManager:
         if username in users:
             users[username]['analyses_count'] = users[username].get('analyses_count', 0) + 1
             self.save_users(users)
+    
+    def request_password_reset(self, email: str) -> Tuple[bool, str]:
+        """
+        Request a password reset for a user.
+        
+        Args:
+            email (str): User's email address
+            
+        Returns:
+            Tuple[bool, str]: (success, message)
+        """
+        users = self.load_users()
+        
+        # Find user by email
+        user_found = None
+        for username, user_data in users.items():
+            if user_data.get('email') == email:
+                user_found = (username, user_data)
+                break
+        
+        if not user_found:
+            return False, "No account found with this email address"
+        
+        username, user_data = user_found
+        
+        # Generate reset token
+        email_service = get_email_service()
+        reset_token = email_service.generate_reset_token()
+        
+        # Store reset token with expiration
+        reset_tokens_file = os.path.join(os.path.dirname(self.users_file), "reset_tokens.json")
+        
+        try:
+            if os.path.exists(reset_tokens_file):
+                with open(reset_tokens_file, 'r') as f:
+                    reset_tokens = json.load(f)
+            else:
+                reset_tokens = {}
+            
+            # Store token with expiration (1 hour)
+            reset_tokens[reset_token] = {
+                'username': username,
+                'email': email,
+                'created_at': datetime.now().isoformat(),
+                'expires_at': (datetime.now() + timedelta(hours=1)).isoformat(),
+                'used': False
+            }
+            
+            with open(reset_tokens_file, 'w') as f:
+                json.dump(reset_tokens, f, indent=2)
+            
+            # Send reset email
+            if email_service.send_password_reset_email(email, username, reset_token):
+                logger.info(f"Password reset requested for {username} ({email})")
+                return True, "Password reset email sent! Check your inbox."
+            else:
+                return False, "Failed to send reset email. Please try again."
+                
+        except Exception as e:
+            logger.error(f"Failed to process password reset request: {e}")
+            return False, "An error occurred. Please try again."
+    
+    def reset_password_with_token(self, reset_token: str, new_password: str) -> Tuple[bool, str]:
+        """
+        Reset password using a reset token.
+        
+        Args:
+            reset_token (str): Reset token from email
+            new_password (str): New password
+            
+        Returns:
+            Tuple[bool, str]: (success, message)
+        """
+        reset_tokens_file = os.path.join(os.path.dirname(self.users_file), "reset_tokens.json")
+        
+        try:
+            if not os.path.exists(reset_tokens_file):
+                return False, "Invalid reset token"
+            
+            with open(reset_tokens_file, 'r') as f:
+                reset_tokens = json.load(f)
+            
+            if reset_token not in reset_tokens:
+                return False, "Invalid reset token"
+            
+            token_data = reset_tokens[reset_token]
+            
+            # Check if token is expired
+            expires_at = datetime.fromisoformat(token_data['expires_at'])
+            if datetime.now() > expires_at:
+                return False, "Reset token has expired. Please request a new one."
+            
+            # Check if token is already used
+            if token_data['used']:
+                return False, "Reset token has already been used. Please request a new one."
+            
+            # Update user's password
+            users = self.load_users()
+            username = token_data['username']
+            
+            if username not in users:
+                return False, "User not found"
+            
+            # Hash new password
+            hashed_password = self.hash_password(new_password)
+            users[username]['password'] = hashed_password
+            
+            # Save updated users
+            self.save_users(users)
+            
+            # Mark token as used
+            reset_tokens[reset_token]['used'] = True
+            with open(reset_tokens_file, 'w') as f:
+                json.dump(reset_tokens, f, indent=2)
+            
+            logger.info(f"Password reset successful for {username}")
+            return True, "Password reset successful! You can now login with your new password."
+            
+        except Exception as e:
+            logger.error(f"Failed to reset password: {e}")
+            return False, "An error occurred. Please try again."
+    
+    def send_welcome_email(self, username: str, email: str) -> bool:
+        """Send welcome email to new user."""
+        try:
+            email_service = get_email_service()
+            return email_service.send_welcome_email(email, username)
+        except Exception as e:
+            logger.error(f"Failed to send welcome email: {e}")
+            return False
 
 # Global auth manager instance
 auth_manager = AuthManager()
@@ -234,6 +373,44 @@ def login_page():
     """Display the login page."""
     st.title("🔐 Login to Trading Simulator")
     st.markdown("---")
+    
+    # Check for password reset token in URL parameters
+    query_params = st.query_params
+    reset_token = query_params.get('reset_token')
+    
+    if reset_token:
+        # Show password reset form
+        col1, col2, col3 = st.columns([1, 2, 1])
+        
+        with col2:
+            st.subheader("🔒 Reset Your Password")
+            st.info("Enter your new password below.")
+            
+            with st.form("reset_password_form"):
+                new_password = st.text_input("New Password", type="password", placeholder="Enter your new password")
+                confirm_password = st.text_input("Confirm New Password", type="password", placeholder="Confirm your new password")
+                reset_button = st.form_submit_button("Reset Password", use_container_width=True)
+                
+                if reset_button:
+                    if new_password and confirm_password:
+                        if new_password == confirm_password:
+                            success, message = auth_manager.reset_password_with_token(reset_token, new_password)
+                            if success:
+                                st.success(message)
+                                st.info("You can now login with your new password.")
+                                # Clear the reset token from URL
+                                st.query_params.clear()
+                                st.rerun()
+                            else:
+                                st.error(message)
+                        else:
+                            st.error("Passwords do not match")
+                    else:
+                        st.error("Please fill in all fields")
+            
+            st.markdown("---")
+            st.markdown("**Remember your password?** [Login here](#login)")
+        return
     
     col1, col2, col3 = st.columns([1, 2, 1])
     
@@ -269,6 +446,25 @@ def login_page():
         if register_clicked:
             st.session_state.show_register = True
             st.rerun()
+        
+        # Forgot password section
+        st.markdown("---")
+        st.markdown("### 🔑 Forgot Your Password?")
+        st.info("Enter your email address and we'll send you a password reset link.")
+        
+        with st.form("forgot_password_form"):
+            reset_email = st.text_input("Email Address", placeholder="Enter your registered email", key="forgot_email")
+            reset_button = st.form_submit_button("Send Reset Link", use_container_width=True)
+            
+            if reset_button:
+                if reset_email:
+                    success, message = auth_manager.request_password_reset(reset_email)
+                    if success:
+                        st.success(message)
+                    else:
+                        st.error(message)
+                else:
+                    st.error("Please enter your email address")
     
     # Display user stats
     st.markdown("---")

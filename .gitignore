@@ -36,6 +36,7 @@ data/users.json
 data/stock_stats.json
 data/analysis_history.json
 data/session_data.pkl
+data/reset_tokens.json
 backups/
 
 # Logs
@@ -83,6 +84,8 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Email configuration (keep email_config.py as it's a helper, not sensitive data)
 
 # Test files
 test_*.py
