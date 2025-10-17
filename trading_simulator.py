@@ -607,7 +607,7 @@ def main():
                     lambda x: x[:10] if x != 'N/A' else 'Never'
                 )
                 
-                st.dataframe(df, use_container_width=True, hide_index=True)
+                st.dataframe(df, width='stretch', hide_index=True)
     else:
         st.info("No stock searches recorded yet. Start analyzing stocks to see popular trends!")
     
@@ -778,27 +778,27 @@ def main():
             ])
             
             with tab1:
-                st.plotly_chart(figures['Moving_Averages'], use_container_width=True, key="moving_averages_chart")
+                st.plotly_chart(figures['Moving_Averages'], width='stretch', key="moving_averages_chart")
                 st.write("**Moving Averages Analysis**: Shows 50-day and 200-day SMA and EMA. Price above moving averages indicates bullish trend.")
             
             with tab2:
-                st.plotly_chart(figures['Bollinger_Bands'], use_container_width=True, key="bollinger_bands_chart")
+                st.plotly_chart(figures['Bollinger_Bands'], width='stretch', key="bollinger_bands_chart")
                 st.write("**Bollinger Bands Analysis**: Shows price volatility. Price touching bands suggests potential reversal.")
             
             with tab3:
-                st.plotly_chart(figures['MACD'], use_container_width=True, key="macd_chart")
+                st.plotly_chart(figures['MACD'], width='stretch', key="macd_chart")
                 st.write("**MACD Analysis**: Shows MACD line and signal line. MACD above signal line indicates bullish momentum.")
             
             with tab4:
-                st.plotly_chart(figures['Volume_Trend'], use_container_width=True, key="volume_trend_chart")
+                st.plotly_chart(figures['Volume_Trend'], width='stretch', key="volume_trend_chart")
                 st.write("**Volume Trend Analysis**: Shows 20-day volume trend. Higher volume confirms price movements.")
             
             with tab5:
-                st.plotly_chart(figures['SuperTrend'], use_container_width=True, key="supertrend_chart")
+                st.plotly_chart(figures['SuperTrend'], width='stretch', key="supertrend_chart")
                 st.write("**SuperTrend Analysis**: Shows SuperTrend indicator. Price above SuperTrend indicates bullish trend.")
             
             with tab6:
-                st.plotly_chart(figures['Trading_Signals'], use_container_width=True, key="trading_signals_chart")
+                st.plotly_chart(figures['Trading_Signals'], width='stretch', key="trading_signals_chart")
                 st.write("**Trading Signals**: Green triangles show buy signals, red triangles show sell signals based on SuperTrend and pivot points.")
             
             # Summary statistics

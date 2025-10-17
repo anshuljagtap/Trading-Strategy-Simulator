@@ -389,7 +389,7 @@ def login_page():
             with st.form("reset_password_form"):
                 new_password = st.text_input("New Password", type="password", placeholder="Enter your new password")
                 confirm_password = st.text_input("Confirm New Password", type="password", placeholder="Confirm your new password")
-                reset_button = st.form_submit_button("Reset Password", use_container_width=True)
+                reset_button = st.form_submit_button("Reset Password", width='stretch')
                 
                 if reset_button:
                     if new_password and confirm_password:
@@ -424,10 +424,10 @@ def login_page():
             col_login, col_register = st.columns(2)
             
             with col_login:
-                login_clicked = st.form_submit_button("Login", use_container_width=True)
+                login_clicked = st.form_submit_button("Login", width='stretch')
             
             with col_register:
-                register_clicked = st.form_submit_button("Register", use_container_width=True)
+                register_clicked = st.form_submit_button("Register", width='stretch')
         
         if login_clicked:
             if username and password:
@@ -454,7 +454,7 @@ def login_page():
         
         with st.form("forgot_password_form"):
             reset_email = st.text_input("Email Address", placeholder="Enter your registered email", key="forgot_email")
-            reset_button = st.form_submit_button("Send Reset Link", use_container_width=True)
+            reset_button = st.form_submit_button("Send Reset Link", width='stretch')
             
             if reset_button:
                 if reset_email:
@@ -497,10 +497,10 @@ def register_page():
             col_register, col_back = st.columns(2)
             
             with col_register:
-                register_clicked = st.form_submit_button("Create Account", use_container_width=True)
+                register_clicked = st.form_submit_button("Create Account", width='stretch')
             
             with col_back:
-                back_clicked = st.form_submit_button("Back to Login", use_container_width=True)
+                back_clicked = st.form_submit_button("Back to Login", width='stretch')
         
         if register_clicked:
             if username and email and password and confirm_password:
@@ -541,7 +541,7 @@ def show_user_info():
             st.write(f"**Analyses:** {st.session_state.user_data.get('analyses_count', 0)}")
             st.write(f"**Member since:** {st.session_state.user_data.get('created_at', 'N/A')[:10]}")
             
-            if st.button("Logout", use_container_width=True):
+            if st.button("Logout", width='stretch'):
                 logout()
 
 def require_auth(func):
