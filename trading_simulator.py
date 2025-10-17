@@ -8,7 +8,7 @@ from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 import json
 import os
-from auth import main_auth, auth_manager, require_auth
+from auth_simple import main_auth, auth_manager, require_auth
 
 # Page configuration
 st.set_page_config(
