@@ -5,6 +5,8 @@ A comprehensive stock market analysis tool with real-time data, technical indica
 ## 🚀 Features
 
 - **🔐 User Authentication** - Secure login and registration system
+- **📧 Email Functionality** - Welcome emails and password reset via email
+- **🔑 Forgot Password** - Secure email-based password reset with tokens
 - **Real-time Stock Analysis** with Yahoo Finance data
 - **Technical Indicators**: MACD, Bollinger Bands, RSI, SMA, EMA, SuperTrend
 - **Interactive Charts** with Plotly
@@ -45,16 +47,56 @@ A comprehensive stock market analysis tool with real-time data, technical indica
    pip install -r requirements.txt
    ```
 
-3. **Run the app:**
+3. **Set up email functionality (optional but recommended):**
+   ```bash
+   python setup_email.py
+   ```
+
+4. **Run the app:**
    ```bash
    streamlit run trading_simulator.py
    ```
+
+## 📧 Email Setup
+
+### Quick Email Setup
+```bash
+python setup_email.py
+```
+
+### Manual Email Configuration
+Set these environment variables:
+```bash
+export EMAIL_ADDRESS="your-email@gmail.com"
+export EMAIL_PASSWORD="your-app-password"
+export SMTP_SERVER="smtp.gmail.com"
+export SMTP_PORT="587"
+```
+
+### Gmail Setup (Recommended)
+1. Enable 2-Factor Authentication
+2. Generate an App Password
+3. Use the App Password (not your regular password)
+
+### Email Features
+- **Welcome Emails**: New users receive comprehensive onboarding emails
+- **Password Reset**: Secure email-based password reset with tokens
+- **Professional Templates**: Beautiful HTML email designs
+- **Security**: Time-limited, single-use reset tokens
+
+For detailed setup instructions, see [EMAIL_SETUP_GUIDE.md](EMAIL_SETUP_GUIDE.md)
+
+### Test Email Functionality
+```bash
+python test_email.py
+```
 
 ## 📊 Usage
 
 ### Authentication
 - **Login**: Use your username and password to access the app
 - **Register**: Create a new account with username, email, and password
+- **Forgot Password**: Reset your password via email
 - **Demo User**: Use `demo` / `demo123` for testing
 
 ### Stock Analysis

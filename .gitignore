@@ -87,6 +87,5 @@ out/
 
 # Email configuration (keep email_config.py as it's a helper, not sensitive data)
 
-# Test files
-test_*.py
+# Test files (keep test_email.py as it's a useful utility)
 *_test.py
