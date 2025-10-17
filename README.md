@@ -1,239 +1,203 @@
-# 📈 Trading Strategy Simulator
+# 📈 Streamlit Trading Simulator
 
-A comprehensive stock market analysis tool built with Streamlit that provides technical analysis, trading signals, and weighted recommendations with user registration and analytics.
+A comprehensive stock market analysis tool with real-time data, technical indicators, and persistent user data.
 
-## ✨ Features
+## 🚀 Features
 
-- **🔐 User Registration**: Sign up and track your usage
-- **📊 Technical Indicators**: SMA, EMA, MACD, Bollinger Bands, SuperTrend, Volume Analysis
-- **🎯 Weighted Recommendations**: AI-powered buy/sell/hold signals with confidence levels
-- **⭐ Favorites Management**: Save and manage your favorite stocks
-- **📈 Interactive Charts**: Beautiful Plotly visualizations
-- **⚡ Quick Actions**: One-click analysis for popular stocks
-- **📱 Responsive Design**: Works on desktop and mobile
-- **📊 User Dashboard**: Track your analysis history and statistics
-- **👨‍💼 Admin Dashboard**: Monitor platform usage and user analytics
+- **🔐 User Authentication** - Secure login and registration system
+- **Real-time Stock Analysis** with Yahoo Finance data
+- **Technical Indicators**: MACD, Bollinger Bands, RSI, SMA, EMA, SuperTrend
+- **Interactive Charts** with Plotly
+- **User Data Persistence** - Stats and analysis history are saved
+- **Keep-Alive System** - App stays running and doesn't sleep
+- **Automatic Backups** - Data is backed up regularly
+- **Comprehensive Logging** - All activity is logged
+- **User Statistics** - Track individual user analysis counts
+- **Popular Stocks Tracking** - See the most searched stocks on the platform
 
-## 🚀 Quick Deploy (Recommended)
+## 🛠️ Setup
 
-### Option 1: Streamlit Cloud (FREE)
-1. **Run the deployment script:**
+### Quick Start
+
+1. **Run the setup script:**
    ```bash
-   ./deploy.sh
-   ```
-2. **Follow the prompts** to create a GitHub repository
-3. **Deploy on Streamlit Cloud:**
-   - Go to [share.streamlit.io](https://share.streamlit.io)
-   - Sign in with GitHub
-   - Click "New app"
-   - Select your repository
-   - Set main file: `trading_simulator.py`
-   - Click "Deploy!"
-
-**Your app will be live at:** `https://your-app-name.streamlit.app`
-
-### Option 2: Local Network Sharing
-```bash
-# Run with network access
-streamlit run trading_simulator.py --server.address=0.0.0.0 --server.port=8501
-```
-Others can access: `http://YOUR_IP:8501`
-
-## 🛠️ Local Development
-
-### Prerequisites
-- Python 3.8+
-- pip
-
-### Installation
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/trading-strategy-simulator.git
-   cd trading-strategy-simulator
+   ./setup.sh
    ```
 
-2. **Create virtual environment:**
+2. **Start the application:**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ./run_app.sh
    ```
 
-3. **Install dependencies:**
+3. **Access the app:**
+   - Open your browser to: `http://localhost:8501`
+
+### Manual Setup
+
+1. **Create virtual environment:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+2. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Run the application:**
+3. **Run the app:**
    ```bash
    streamlit run trading_simulator.py
    ```
 
-5. **Open in browser:**
-   ```
-   http://localhost:8501
-   ```
+## 📊 Usage
 
-## 🔐 User Registration System
+### Authentication
+- **Login**: Use your username and password to access the app
+- **Register**: Create a new account with username, email, and password
+- **Demo User**: Use `demo` / `demo123` for testing
 
-### Features
-- **Secure Registration**: Email-based signup with password hashing
-- **User Profiles**: Track individual user statistics and preferences
-- **Activity Logging**: Monitor user interactions and analyses
-- **Favorites Sync**: Personal favorite stocks saved per user
-- **Usage Analytics**: Track how many people use your platform
+### Stock Analysis
+- Enter a stock ticker (e.g., AAPL, MSFT, GOOGL)
+- Select date range for analysis
+- View comprehensive technical analysis
+- Get buy/sell recommendations
+- Your analysis count is automatically tracked
+- Popular stocks are displayed based on search frequency
 
-### User Dashboard
-- **Personal Statistics**: View your analysis count and login history
-- **Recent Activity**: See your last 10 stock analyses
-- **Favorite Stocks**: Manage your personal stock watchlist
-- **Member Since**: Track how long you've been using the platform
+### Data Persistence
+- All user interactions are automatically saved
+- Analysis history is preserved
+- User statistics are maintained
+- Data is backed up regularly
 
-### Admin Dashboard
-Access admin analytics at: `http://localhost:8501/admin_dashboard.py`
+## 🔧 Management
 
-**Default Admin Password:** `admin123` (Change this in production!)
+### Start the App
+```bash
+./run_app.sh
+```
 
-**Admin Features:**
-- **User Analytics**: Total users, active users, growth trends
-- **Usage Statistics**: Total analyses, popular stocks, engagement metrics
-- **User Details**: Export user data, view individual user statistics
-- **Activity Monitoring**: Track recent platform activity
-- **Growth Insights**: User growth charts and platform metrics
+### Stop the App
+```bash
+./stop_app.sh
+```
 
-## 📊 Technical Indicators
+### View Logs
+```bash
+tail -f keep_alive.log
+```
 
-### Moving Averages
-- **50-Day SMA**: Short-term trend analysis
-- **200-Day SMA**: Long-term trend analysis
-- **Golden Cross/Death Cross**: Trend reversal signals
+### Data Location
+- **User Data**: `data/users.json`
+- **Statistics**: `data/stats.json`
+- **Analysis History**: `data/analysis_history.json`
+- **Stock Search Stats**: `data/stock_stats.json`
+- **Backups**: `backups/` directory
 
-### Momentum Indicators
-- **MACD**: Momentum and trend changes
-- **Signal Line**: MACD confirmation
-- **SuperTrend**: Trend following with stop-loss
+## 🛡️ Keep-Alive System
 
-### Volatility Indicators
-- **Bollinger Bands**: Price volatility and overbought/oversold levels
-- **Volume Trend**: Trading volume analysis
+The app includes an automatic keep-alive system that:
+- Sends periodic pings to prevent the app from sleeping
+- Logs all activity
+- Automatically restarts if the app becomes unresponsive
+- Runs every 5 minutes by default
 
-### Support/Resistance
-- **Pivot Points**: Key support and resistance levels
-- **R1/S1**: Dynamic support and resistance
+## 💾 Data Persistence
 
-## 🎯 Recommendation System
+Your data is automatically saved and includes:
+- **User Information**: Sign-ups and user counts
+- **Analysis History**: All stock analyses performed
+- **Statistics**: App usage statistics
+- **Session Data**: Current session information
 
-The app uses a **weighted scoring system** with 7 technical indicators:
+## 🔄 Backup System
 
-- **SuperTrend (25%)**: Highest weight for trend analysis
-- **Moving Averages (20%)**: SMA and EMA analysis
-- **MACD (20%)**: Momentum analysis
-- **EMA (15%)**: Exponential moving averages
-- **Bollinger Bands (10%)**: Volatility analysis
-- **Pivot Points (10%)**: Support/resistance levels
-- **Volume (5%)**: Volume confirmation
+Automatic backups are created:
+- Daily backups of all data files
+- Timestamped backup folders
+- Automatic cleanup of old backups (30+ days)
+- Manual backup creation available
 
-### Recommendation Levels
-- 🟢 **STRONG BUY** (≥75%): High confidence buy signal
-- 🟡 **BUY** (≥65%): Moderate confidence buy signal
-- 🟠 **HOLD** (≥45%): Wait for clearer signals
-- 🔴 **SELL** (≥35%): Consider selling
-- 🔴 **STRONG SELL** (<35%): High confidence sell signal
+## 📝 Logging
 
-## ⭐ Favorites Management
+Comprehensive logging includes:
+- Keep-alive ping status
+- Data save/load operations
+- Error tracking
+- Performance metrics
 
-- **Add Favorites**: Type a stock ticker and click "+"
-- **Quick Access**: Click on any favorite to analyze instantly
-- **Remove Favorites**: Click "❌" to remove from favorites
-- **Auto-Add**: "⭐ Add to Favorites" button for current stock
-- **Clear All**: "🗑️ Clear All Favorites" to start fresh
-- **User Sync**: Favorites are saved per user account
+## 🚨 Troubleshooting
 
-## 🌐 Supported Stocks
+### App Won't Start
+1. Check if port 8501 is available
+2. Ensure all dependencies are installed
+3. Check the logs: `tail -f keep_alive.log`
 
-The app supports stocks from major exchanges:
-- **US Stocks**: AAPL, MSFT, GOOGL, TSLA, AMZN, etc.
-- **Indian Stocks**: ITC.NS, RELIANCE.NS, TCS.NS, etc.
-- **Global Stocks**: Any ticker supported by Yahoo Finance
+### Data Loss
+1. Check the `data/` directory
+2. Restore from backups in `backups/` directory
+3. Check logs for error messages
+
+### Keep-Alive Issues
+1. Check if the keep-alive service is running
+2. Verify the app URL is correct
+3. Check network connectivity
+
+## 📁 File Structure
+
+```
+├── trading_simulator.py    # Main Streamlit application
+├── keep_alive.py          # Keep-alive service
+├── data_persistence.py    # Data persistence module
+├── run_app.sh            # Start script
+├── stop_app.sh           # Stop script
+├── setup.sh              # Setup script
+├── requirements.txt      # Python dependencies
+├── data/                 # Data storage directory
+├── backups/              # Backup directory
+└── logs/                 # Log files
+```
 
 ## 🔧 Configuration
 
 ### Environment Variables
-- `STREAMLIT_SERVER_PORT`: Port number (default: 8501)
-- `STREAMLIT_SERVER_ADDRESS`: Server address
-- `STREAMLIT_BROWSER_GATHER_USAGE_STATS`: Usage statistics
+- `STREAMLIT_URL`: URL of the Streamlit app (default: http://localhost:8501)
+- `KEEP_ALIVE_INTERVAL`: Ping interval in seconds (default: 300)
 
-### Customization
-- Modify `trading_simulator.py` to add new indicators
-- Update weights in `generate_recommendation()` function
-- Add new stocks to `popular_stocks` list
-- Change admin password in `admin_dashboard.py`
+### Streamlit Configuration
+The app uses `.streamlit/config.toml` for configuration:
+- Headless mode enabled
+- CORS disabled for local development
+- Custom theme colors
 
-## 📱 Usage
+## 📈 Technical Indicators
 
-1. **Sign Up/Login**: Create an account or login to track your usage
-2. **Enter Stock Ticker**: Type a stock symbol (e.g., AAPL, MSFT)
-3. **Select Date Range**: Choose analysis period
-4. **View Analysis**: Explore charts and indicators
-5. **Check Recommendations**: See weighted buy/sell signals
-6. **Manage Favorites**: Save stocks for quick access
-7. **View Dashboard**: Track your personal statistics
+The app analyzes stocks using:
+- **Moving Averages**: SMA, EMA
+- **Momentum**: MACD, RSI
+- **Volatility**: Bollinger Bands
+- **Trend**: SuperTrend
+- **Support/Resistance**: Pivot Points
+- **Volume Analysis**: Volume trends
 
-## 🚨 Important Notes
+## 🎯 Recommendations
 
-- **Data Source**: Yahoo Finance API (free tier)
-- **Rate Limits**: Respect API usage limits
-- **Educational Purpose**: Not financial advice
-- **Real-time Data**: Delayed by 15-20 minutes
-- **User Data**: Stored locally in `users.json` (consider database for production)
-- **Security**: Passwords are hashed, but consider additional security for production
-
-## 🐛 Troubleshooting
-
-### Common Issues
-1. **"No data found"**: Check ticker symbol spelling
-2. **Slow loading**: Reduce date range or check internet
-3. **Chart issues**: Refresh page or try different stock
-4. **Login issues**: Check email/password or create new account
-
-### Performance Tips
-- Use shorter date ranges for faster loading
-- Clear browser cache if charts don't load
-- Check internet connection for data fetching
-
-## 📈 Future Enhancements
-
-- [ ] Database integration (PostgreSQL/MongoDB)
-- [ ] Email verification for registration
-- [ ] Password reset functionality
-- [ ] Real-time data feeds
-- [ ] Portfolio tracking
-- [ ] Backtesting capabilities
-- [ ] More technical indicators
-- [ ] Mobile app version
-- [ ] Custom alerts
-- [ ] Social features (share analyses)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📄 License
-
-This project is for educational purposes. Please do your own research before making investment decisions.
+The app provides:
+- **Buy/Sell/Hold** recommendations
+- **Confidence levels** (High/Medium/Low)
+- **Risk assessment** with volatility metrics
+- **Support and resistance** levels
+- **Detailed reasoning** for each recommendation
 
 ## 📞 Support
 
-- **Issues**: Create a GitHub issue
-- **Questions**: Check the documentation
-- **Deployment**: See `DEPLOYMENT_GUIDE.md`
-- **Admin Access**: Use `admin_dashboard.py` with password `admin123`
+For issues or questions:
+1. Check the logs first
+2. Verify all dependencies are installed
+3. Ensure the virtual environment is activated
+4. Check if ports are available
 
 ---
 
-**⚠️ Disclaimer**: This tool is for educational purposes only. Not financial advice. Always do your own research and consult with financial advisors before making investment decisions.
-
-**Happy Trading! 📈💰** 
+**Happy Trading! 📈**

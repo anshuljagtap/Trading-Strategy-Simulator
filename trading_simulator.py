@@ -8,7 +8,7 @@ from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 import json
 import os
-import hashlib
+from auth import main_auth, auth_manager, require_auth
 
 # Page configuration
 st.set_page_config(
@@ -37,94 +37,31 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# User management functions
-def load_users():
-    """Load users from JSON file."""
+# Simple user counter
+def get_user_count():
+    """Get total number of users who have signed up."""
     if os.path.exists('users.json'):
         with open('users.json', 'r') as f:
-            return json.load(f)
-    return {}
+            users = json.load(f)
+            return len(users)
+    return 0
 
-def save_users(users):
-    """Save users to JSON file."""
+def increment_user_count():
+    """Increment user count when someone signs up."""
+    if os.path.exists('users.json'):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+    else:
+        users = {}
+    
+    # Add a timestamp-based user entry
+    timestamp = datetime.now().isoformat()
+    users[f"user_{timestamp}"] = {
+        "signup_date": timestamp
+    }
+    
     with open('users.json', 'w') as f:
         json.dump(users, f, indent=2)
-
-def hash_password(password):
-    """Hash password for security."""
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def create_user(email, password, name):
-    """Create a new user."""
-    users = load_users()
-    if email in users:
-        return False, "Email already registered"
-    
-    users[email] = {
-        'name': name,
-        'password': hash_password(password),
-        'created_date': datetime.now().isoformat(),
-        'last_login': datetime.now().isoformat(),
-        'usage_count': 0,
-        'favorite_stocks': [],
-        'analyses_performed': []
-    }
-    save_users(users)
-    return True, "Registration successful!"
-
-def authenticate_user(email, password):
-    """Authenticate user login."""
-    users = load_users()
-    if email in users and users[email]['password'] == hash_password(password):
-        users[email]['last_login'] = datetime.now().isoformat()
-        users[email]['usage_count'] += 1
-        save_users(users)
-        return True, users[email]
-    return False, None
-
-def update_user_activity(email, action, details=None):
-    """Update user activity log."""
-    users = load_users()
-    if email in users:
-        if 'analyses_performed' not in users[email]:
-            users[email]['analyses_performed'] = []
-        
-        users[email]['analyses_performed'].append({
-            'action': action,
-            'timestamp': datetime.now().isoformat(),
-            'details': details
-        })
-        save_users(users)
-
-def get_user_stats():
-    """Get overall user statistics."""
-    users = load_users()
-    if not users:
-        return {
-            'total_users': 0,
-            'total_analyses': 0,
-            'active_users': 0,
-            'popular_stocks': []
-        }
-    
-    total_analyses = sum(len(user.get('analyses_performed', [])) for user in users.values())
-    active_users = len([user for user in users.values() 
-                       if (datetime.now() - datetime.fromisoformat(user['last_login'])).days < 30])
-    
-    # Get popular stocks
-    all_stocks = []
-    for user in users.values():
-        all_stocks.extend(user.get('favorite_stocks', []))
-    
-    from collections import Counter
-    popular_stocks = Counter(all_stocks).most_common(5)
-    
-    return {
-        'total_users': len(users),
-        'total_analyses': total_analyses,
-        'active_users': active_users,
-        'popular_stocks': popular_stocks
-    }
 
 # Fetching Data
 def fetch_data(ticker, start_date, end_date):
@@ -602,43 +539,78 @@ def plot_indicators(stock_data, ticker):
     
     return figures
 
-def show_user_dashboard():
-    """Show user dashboard with statistics and activity."""
-    st.header("📊 My Dashboard")
+def main():
+    """Main function to run the Streamlit app."""
     
-    user_data = load_users().get(st.session_state.current_user, {})
+    # Check authentication first
+    if not main_auth():
+        return  # Stop execution if user is not authenticated
     
-    # User statistics
-    col1, col2, col3, col4 = st.columns(4)
+    # Initialize session state
+    if 'selected_ticker' not in st.session_state:
+        st.session_state.selected_ticker = "AAPL"
+    if 'favorites' not in st.session_state:
+        st.session_state.favorites = ["AAPL", "MSFT", "GOOGL"]
+    
+    # Header
+    st.markdown('<h1 class="main-header">📈 Trading Strategy Simulator</h1>', unsafe_allow_html=True)
+    
+    # Welcome message for authenticated user
+    st.success(f"Welcome back, {st.session_state.username}! 🎉")
+    
+    # Platform statistics
+    st.subheader("📊 Platform Statistics")
+    stats = auth_manager.get_user_stats()
+    col1, col2, col3 = st.columns(3)
+    
     with col1:
-        st.metric("Total Analyses", len(user_data.get('analyses_performed', [])))
+        st.metric("Total Users", stats['total_users'], help="All registered users since launch")
     with col2:
-        st.metric("Login Count", user_data.get('usage_count', 0))
+        st.metric("Total Analyses", stats['total_analyses'], help="All analyses performed")
     with col3:
-        st.metric("Favorite Stocks", len(user_data.get('favorite_stocks', [])))
-    with col4:
-        days_member = (datetime.now() - datetime.fromisoformat(user_data.get('created_date', datetime.now().isoformat()))).days
-        st.metric("Days as Member", days_member)
+        st.metric("Active Users", stats['active_users'], help="Users active in last 30 days")
     
-    # Recent activity
-    st.subheader("📈 Recent Activity")
-    activities = user_data.get('analyses_performed', [])
-    if activities:
-        for activity in activities[-10:]:  # Show last 10 activities
-            timestamp = datetime.fromisoformat(activity['timestamp']).strftime("%Y-%m-%d %H:%M")
-            st.write(f"**{timestamp}**: {activity['action']}")
-            if activity.get('details'):
-                st.write(f"  Details: {activity['details']}")
+    # Most popular stocks section
+    st.markdown("---")
+    st.subheader("🔥 Most Popular Stocks")
+    
+    popular_stocks = auth_manager.get_popular_stocks(limit=10)
+    
+    if popular_stocks:
+        # Create columns for the popular stocks display
+        cols = st.columns(5)
+        
+        for i, stock in enumerate(popular_stocks[:10]):
+            col_idx = i % 5
+            with cols[col_idx]:
+                # Create a clickable button for each popular stock
+                if st.button(
+                    f"📈 {stock['ticker']}\n🔍 {stock['count']} searches", 
+                    key=f"popular_{stock['ticker']}",
+                    help=f"Last searched: {stock['last_searched'][:10] if stock['last_searched'] != 'N/A' else 'Never'}"
+                ):
+                    st.session_state.selected_ticker = stock['ticker']
+                    st.rerun()
+        
+        # Show detailed table in an expander
+        with st.expander("📋 Detailed Popular Stocks List"):
+            if popular_stocks:
+                # Create a DataFrame for better display
+                import pandas as pd
+                df = pd.DataFrame(popular_stocks)
+                df['Rank'] = range(1, len(df) + 1)
+                df = df[['Rank', 'ticker', 'count', 'last_searched']]
+                df.columns = ['Rank', 'Stock', 'Searches', 'Last Searched']
+                
+                # Format the last searched date
+                df['Last Searched'] = df['Last Searched'].apply(
+                    lambda x: x[:10] if x != 'N/A' else 'Never'
+                )
+                
+                st.dataframe(df, use_container_width=True, hide_index=True)
     else:
-        st.info("No activity recorded yet. Start analyzing stocks!")
+        st.info("No stock searches recorded yet. Start analyzing stocks to see popular trends!")
     
-    # Back to main app
-    if st.button("🔙 Back to Analysis"):
-        st.session_state.show_dashboard = False
-        st.rerun()
-
-def main_app():
-    """Main application after authentication."""
     # Sidebar
     st.sidebar.header("📊 Analysis Settings")
     
@@ -685,13 +657,6 @@ def main_app():
         if st.button("➕", help="Add to favorites"):
             if new_favorite and new_favorite not in st.session_state.favorites:
                 st.session_state.favorites.append(new_favorite)
-                # Update user's favorite stocks
-                users = load_users()
-                if st.session_state.current_user in users:
-                    if 'favorite_stocks' not in users[st.session_state.current_user]:
-                        users[st.session_state.current_user]['favorite_stocks'] = []
-                    users[st.session_state.current_user]['favorite_stocks'].append(new_favorite)
-                    save_users(users)
                 st.rerun()
     
     # Display favorites with remove buttons
@@ -710,28 +675,31 @@ def main_app():
             with col3:
                 if st.button("❌", key=f"remove_{fav}", help=f"Remove {fav} from favorites"):
                     st.session_state.favorites.remove(fav)
-                    # Update user's favorite stocks
-                    users = load_users()
-                    if st.session_state.current_user in users:
-                        if 'favorite_stocks' in users[st.session_state.current_user]:
-                            users[st.session_state.current_user]['favorite_stocks'].remove(fav)
-                            save_users(users)
                     st.rerun()
         
         # Clear all favorites option
         if st.sidebar.button("🗑️ Clear All Favorites", help="Remove all favorites"):
             st.session_state.favorites = []
-            # Update user's favorite stocks
-            users = load_users()
-            if st.session_state.current_user in users:
-                users[st.session_state.current_user]['favorite_stocks'] = []
-                save_users(users)
             st.rerun()
     else:
         st.sidebar.info("No favorites added yet. Add some stocks to get started!")
     
     # Quick actions
     st.sidebar.header("⚡ Quick Actions")
+    
+    # Show most popular stocks from user searches
+    st.sidebar.subheader("🔥 Most Searched")
+    popular_searches = auth_manager.get_popular_stocks(limit=5)
+    
+    if popular_searches:
+        for stock in popular_searches:
+            if st.sidebar.button(f"📈 {stock['ticker']} ({stock['count']})", key=f"sidebar_popular_{stock['ticker']}"):
+                st.session_state.selected_ticker = stock['ticker']
+                st.rerun()
+    else:
+        st.sidebar.info("No searches yet")
+    
+    st.sidebar.subheader("📊 Popular Stocks")
     popular_stocks = ["AAPL", "MSFT", "GOOGL", "TSLA", "AMZN", "ITC.NS", "RELIANCE.NS"]
     
     # Create columns for better button layout
@@ -753,13 +721,6 @@ def main_app():
     if ticker and ticker not in st.session_state.favorites:
         if st.sidebar.button("⭐ Add to Favorites", help=f"Add {ticker} to your favorites"):
             st.session_state.favorites.append(ticker)
-            # Update user's favorite stocks
-            users = load_users()
-            if st.session_state.current_user in users:
-                if 'favorite_stocks' not in users[st.session_state.current_user]:
-                    users[st.session_state.current_user]['favorite_stocks'] = []
-                users[st.session_state.current_user]['favorite_stocks'].append(ticker)
-                save_users(users)
             st.rerun()
     
     if ticker and start_date and end_date:
@@ -767,14 +728,15 @@ def main_app():
             st.error("Start date must be before end date.")
             return
         
-        # Track user activity
-        update_user_activity(st.session_state.current_user, f"Analyzed {ticker}", f"Date range: {start_date} to {end_date}")
-        
         # Fetch data
         with st.spinner(f"Fetching data for {ticker}..."):
             stock_data = fetch_data(ticker, start_date, end_date)
         
         if stock_data is not None and not stock_data.empty:
+            # Increment user's analysis count and track stock search
+            auth_manager.increment_analysis_count(st.session_state.username)
+            auth_manager.track_stock_search(ticker)
+            
             # Preprocess and calculate indicators
             with st.spinner("Calculating technical indicators..."):
                 stock_data = preprocess_data(stock_data)
@@ -874,9 +836,6 @@ def main_app():
             
             # Generate recommendation
             recommendation_data = generate_recommendation(stock_data, ticker)
-            
-            # Track recommendation activity
-            update_user_activity(st.session_state.current_user, f"Got recommendation for {ticker}", f"Recommendation: {recommendation_data['recommendation']}")
             
             # Main recommendation display
             col1, col2, col3 = st.columns([2, 1, 1])
@@ -1008,119 +967,6 @@ def main_app():
         """,
         unsafe_allow_html=True
     )
-
-def main():
-    """Main function to run the Streamlit app."""
-    
-    # Initialize session state
-    if 'authenticated' not in st.session_state:
-        st.session_state.authenticated = False
-    if 'current_user' not in st.session_state:
-        st.session_state.current_user = None
-    if 'selected_ticker' not in st.session_state:
-        st.session_state.selected_ticker = "AAPL"
-    if 'favorites' not in st.session_state:
-        st.session_state.favorites = ["AAPL", "MSFT", "GOOGL"]
-    
-    # Header
-    st.markdown('<h1 class="main-header">📈 Trading Strategy Simulator</h1>', unsafe_allow_html=True)
-    
-    # Authentication Section
-    if not st.session_state.authenticated:
-        st.markdown("---")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.subheader("🔐 Login")
-            login_email = st.text_input("Email", key="login_email")
-            login_password = st.text_input("Password", type="password", key="login_password")
-            
-            if st.button("Login"):
-                if login_email and login_password:
-                    success, user_data = authenticate_user(login_email, login_password)
-                    if success:
-                        st.session_state.authenticated = True
-                        st.session_state.current_user = login_email
-                        st.success(f"Welcome back, {user_data['name']}!")
-                        st.rerun()
-                    else:
-                        st.error("Invalid email or password")
-                else:
-                    st.error("Please enter both email and password")
-        
-        with col2:
-            st.subheader("📝 Sign Up")
-            signup_name = st.text_input("Full Name", key="signup_name")
-            signup_email = st.text_input("Email", key="signup_email")
-            signup_password = st.text_input("Password", type="password", key="signup_password")
-            signup_confirm = st.text_input("Confirm Password", type="password", key="signup_confirm")
-            
-            if st.button("Sign Up"):
-                if signup_name and signup_email and signup_password and signup_confirm:
-                    if signup_password == signup_confirm:
-                        if len(signup_password) >= 6:
-                            success, message = create_user(signup_email, signup_password, signup_name)
-                            if success:
-                                st.success(message)
-                                st.info("Please login with your new account")
-                            else:
-                                st.error(message)
-                        else:
-                            st.error("Password must be at least 6 characters long")
-                    else:
-                        st.error("Passwords do not match")
-                else:
-                    st.error("Please fill in all fields")
-        
-        # Show user statistics for non-authenticated users
-        st.markdown("---")
-        st.subheader("📊 Platform Statistics")
-        stats = get_user_stats()
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.metric("Total Users", stats['total_users'], help="All registered users since launch")
-        with col2:
-            st.metric("Total Analyses", stats['total_analyses'], help="Total stock analyses performed")
-        with col3:
-            if stats['total_users'] > 0:
-                avg_analyses = stats['total_analyses'] / stats['total_users']
-                st.metric("Avg Analyses per User", f"{avg_analyses:.1f}", help="Average analyses per registered user")
-            else:
-                st.metric("Avg Analyses per User", "0")
-        with col4:
-            if stats['popular_stocks']:
-                st.metric("Most Popular Stock", stats['popular_stocks'][0][0], help="Most frequently analyzed stock")
-            else:
-                st.metric("Most Popular Stock", "N/A")
-        
-        st.info("💡 Sign up to access the full trading analysis features and track your usage!")
-        return
-    
-    # User is authenticated - show main app
-    user_data = load_users().get(st.session_state.current_user, {})
-    
-    # User info in sidebar
-    st.sidebar.markdown("---")
-    st.sidebar.subheader(f"👤 Welcome, {user_data.get('name', 'User')}!")
-    st.sidebar.write(f"**Email:** {st.session_state.current_user}")
-    st.sidebar.write(f"**Member since:** {user_data.get('created_date', 'N/A')[:10]}")
-    st.sidebar.write(f"**Analyses performed:** {len(user_data.get('analyses_performed', []))}")
-    
-    if st.sidebar.button("🚪 Logout"):
-        st.session_state.authenticated = False
-        st.session_state.current_user = None
-        st.rerun()
-    
-    # User Dashboard
-    if st.sidebar.button("📊 My Dashboard"):
-        st.session_state.show_dashboard = True
-    
-    if st.session_state.get('show_dashboard', False):
-        show_user_dashboard()
-        return
-    
-    # Show main app
-    main_app()
 
 if __name__ == "__main__":
     main() 
